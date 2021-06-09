@@ -1,0 +1,63 @@
+version: '3.8'
+services:
+  jw:
+    image: jitsi/web:latest
+    volumes:
+      - ./jitsi/web:/config:Z
+      - ./jitsi/transcripts:/usr/share/jitsi-meet/transcripts:Z
+    networks:
+      - default
+      - main_default
+    env_file:
+      - jitsi/.env
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.jw.rule=Host(`example.test`)"
+        - "traefik.http.routers.jw.tls.certresolver=myresolver"
+        - "traefik.http.services.jw.loadbalancer.server.port=80"
+      placement:
+        constraints:
+          - node.role == manager
+  prosody:
+    image: jitsi/prosody:latest
+    volumes:
+      - ./jitsi/prosody/config:/config:Z
+      - ./jitsi/prosody/prosody-plugins-custom:/prosody-plugins-custom:Z
+    env_file:
+      - jitsi/.env
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+  jicofo:
+    image: jitsi/jicofo:latest
+    volumes:
+      - ./jitsi/jicofo:/config:Z
+    depends_on:
+      - prosody
+    env_file:
+      - jitsi/.env
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+  jvb:
+    image: jitsi/jvb:latest
+    ports:
+      - '10000:10000/udp'
+      - '4443:4443'
+    volumes:
+      - ./jitsi/jvb:/config:Z
+    depends_on:
+      - prosody
+    env_file:
+      - jitsi/.env
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+networks:
+  main_default:
+    external: true
+    name: main_default
