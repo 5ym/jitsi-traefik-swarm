@@ -3,7 +3,7 @@
 compose file of jitsi for docker swarm(use traefik)
 # How to use
 
-1. setup
+1. setup and generate password
 ```sh
 curl -sf https://raw.githubusercontent.com/5ym/jitsi-traefik-swarm/main/init.sh | sh -s
 ```
