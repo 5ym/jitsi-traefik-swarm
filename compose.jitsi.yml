@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   jw:
     image: jitsi/web:latest
