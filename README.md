@@ -17,5 +17,5 @@ curl -sf https://raw.githubusercontent.com/5ym/jitsi-traefik-swarm/main/init.sh 
 ```
 6. deploy swarm
 ```sh
-docker stack deploy --with-registry-auth -c jitsi-compose.yml jitsi
+docker stack deploy --with-registry-auth -c compose.jitsi.yml jitsi
 ```
